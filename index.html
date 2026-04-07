@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Woolworths Team Experience — Agentic Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --wow-green: #125634;
+    --wow-green-light: #1a7a4a;
+    --wow-green-pale: #e8f5ee;
+    --wow-apple: #4CAF50;
+    --wow-lime: #7bc67e;
+    --surface: #f5f6f8;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #6b7280;
+    --border: #e5e7eb;
+    --agent-bg: #f0faf4;
+    --user-bg: #125634;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+    --radius: 16px;
+    --radius-sm: 12px;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #e8e8e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* Password screen */
+  .password-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--wow-green);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .password-screen.hidden { display: none; }
+  .password-box {
+    text-align: center;
+    color: white;
+    max-width: 340px;
+    padding: 20px;
+  }
+  .password-box h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .password-box p {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 28px;
+  }
+  .password-input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    text-align: center;
+    letter-spacing: 2px;
+    transition: border-color 0.2s;
+  }
+  .password-input::placeholder { color: rgba(255,255,255,0.4); letter-spacing: 0; }
+  .password-input:focus { border-color: rgba(255,255,255,0.7); }
+  .password-submit {
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: white;
+    color: var(--wow-green);
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .password-submit:hover { opacity: 0.9; }
+  .password-error {
+    color: #fca5a5;
+    font-size: 13px;
+    margin-top: 10px;
+    min-height: 20px;
+  }
+  .password-logo {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  /* Intro screen */
+  .intro-screen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(160deg, #0a3d24 0%, #125634 40%, #1a7a4a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+  .intro-screen.hidden { display: none; }
+  .intro-box {
+    max-width: 640px;
+    color: white;
+  }
+  .intro-box h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .intro-subtitle {
+    font-size: 16px;
+    opacity: 0.7;
+    margin-bottom: 32px;
+  }
+  .intro-scenario {
+    background: rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .intro-scenario h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .intro-scenario p {
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.85;
+  }
+  .intro-key-point {
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 20px;
+    margin-bottom: 28px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .intro-key-point p {
+    font-size: 14px;
+    line-height: 1.7;
+    opacity: 0.9;
+  }
+  .intro-start-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: white;
+    color: var(--wow-green);
+    font-size: 17px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .intro-start-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,0.25); }
+
+  .phone-frame {
+    width: 390px;
+    height: 844px;
+    background: var(--surface);
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg), 0 0 0 8px #1a1a2e;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: var(--wow-green);
+    padding: 12px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    height: 44px;
+    flex-shrink: 0;
+  }
+
+  /* Header */
+  .header {
+    background: var(--wow-green);
+    padding: 8px 20px 16px;
+    flex-shrink: 0;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .header-greeting {
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+  }
+  .header-name {
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .header-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--wow-lime);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--wow-green);
+    font-size: 16px;
+  }
+  .header-context {
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-size: 12px;
+    backdrop-filter: blur(10px);
+  }
+  .header-context .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    flex-shrink: 0;
+  }
+  .header-context .store-info {
+    flex: 1;
+  }
+  .header-context .shift-time {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  /* Scrollable content */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+
+  /* Scenario tabs */
+  .scenario-nav {
+    display: flex;
+    gap: 6px;
+    padding: 14px 16px 8px;
+    overflow-x: auto;
+    flex-shrink: 0;
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .scenario-nav::-webkit-scrollbar { display: none; }
+  .scenario-tab {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    background: var(--card);
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+  }
+  .scenario-tab.active {
+    background: var(--wow-green);
+    color: white;
+    border-color: var(--wow-green);
+  }
+  .scenario-tab:hover:not(.active) {
+    border-color: var(--wow-green-light);
+    color: var(--wow-green);
+  }
+
+  /* Scenario panels */
+  .scenario { display: none; padding: 8px 16px 100px; }
+  .scenario.active { display: block; }
+
+  /* Chat messages */
+  .chat-flow { display: flex; flex-direction: column; gap: 10px; }
+
+  .msg {
+    max-width: 88%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    animation: msgIn 0.3s ease-out;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.agent {
+    background: var(--card);
+    color: var(--text);
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .msg.user {
+    background: var(--user-bg);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+  }
+  .msg.system {
+    background: transparent;
+    align-self: center;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 12px;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .agent-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--wow-green);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .agent-label .sparkle { font-size: 13px; }
+
+  /* Cards inside messages */
+  .info-card {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-top: 10px;
+    border: 1px solid var(--border);
+  }
+  .info-card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .info-row:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+  .info-row .label { color: var(--text-secondary); }
+  .info-row .value { font-weight: 600; color: var(--text); }
+  .info-row .value.green { color: var(--wow-green); }
+
+  /* Action buttons */
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .action-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--wow-green);
+    background: white;
+    color: var(--wow-green);
+    transition: all 0.2s;
+  }
+  .action-btn:hover {
+    background: var(--wow-green);
+    color: white;
+  }
+  .action-btn.primary {
+    background: var(--wow-green);
+    color: white;
+  }
+  .action-btn.primary:hover {
+    background: var(--wow-green-light);
+  }
+
+  /* Checklist */
+  .checklist { margin-top: 10px; }
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+  .checklist-item:not(:last-child) { border-bottom: 1px solid var(--border); }
+  .check-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-icon.done { background: var(--wow-green-pale); color: var(--wow-green); }
+  .check-icon.pending { background: #fef3c7; color: #d97706; }
+  .check-icon.alert { background: #fee2e2; color: #dc2626; }
+
+  /* Timeline / shift */
+  .shift-timeline {
+    margin-top: 10px;
+    position: relative;
+    padding-left: 20px;
+  }
+  .shift-timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    padding: 6px 0 6px 0;
+    font-size: 13px;
+    display: flex;
+    gap: 10px;
+  }
+  .timeline-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    position: absolute;
+    left: -20px;
+    top: 10px;
+    border: 2px solid;
+  }
+  .timeline-dot.done { border-color: var(--wow-green); background: var(--wow-green); }
+  .timeline-dot.current { border-color: var(--wow-green); background: white; box-shadow: 0 0 0 3px var(--wow-green-pale); }
+  .timeline-dot.upcoming { border-color: var(--border); background: white; }
+  .timeline-time { color: var(--text-secondary); font-weight: 500; min-width: 50px; }
+  .timeline-label { color: var(--text); }
+  .timeline-label .source-tag {
+    font-size: 10px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+    font-weight: 500;
+  }
+
+  /* Proactive alert card */
+  .alert-card {
+    background: linear-gradient(135deg, #fefce8, #fef9c3);
+    border: 1.5px solid #fde047;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-top: 10px;
+  }
+  .alert-card.urgent {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border-color: #fca5a5;
+  }
+  .alert-card-header {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .alert-card-body { font-size: 13px; color: var(--text-secondary); }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--wow-green);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  /* Source tags */
+  .source-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .source-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .source-tag.ukg { background: #e0e7ff; color: #4338ca; }
+  .source-tag.sf { background: #fce7f3; color: #be185d; }
+  .source-tag.sap { background: #fff7ed; color: #c2410c; }
+  .source-tag.wj { background: #f0fdf4; color: #15803d; }
+  .source-tag.ge { background: #f0f9ff; color: #0369a1; }
+
+  /* Input bar */
+  .input-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    padding-bottom: 28px;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 20;
+  }
+  .input-field {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--surface);
+  }
+  .input-field:focus { border-color: var(--wow-green); }
+  .input-field::placeholder { color: #aab;  }
+  .voice-btn, .send-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .voice-btn { background: var(--surface); color: var(--text-secondary); }
+  .send-btn { background: var(--wow-green); color: white; }
+
+  /* Roster visual */
+  .roster-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 10px;
+  }
+  .roster-day {
+    text-align: center;
+    font-size: 10px;
+    padding: 6px 2px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .roster-day.header { color: var(--text-secondary); font-weight: 500; }
+  .roster-day.shift { background: var(--wow-green-pale); color: var(--wow-green); }
+  .roster-day.off { background: var(--surface); color: var(--text-secondary); }
+  .roster-day.today { background: var(--wow-green); color: white; border: 2px solid var(--wow-green); }
+
+  /* Training card */
+  .training-card {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid var(--border);
+  }
+  .training-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .training-title { font-size: 13px; font-weight: 600; }
+  .training-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .training-badge.required { background: #fee2e2; color: #dc2626; }
+  .training-badge.optional { background: #e0e7ff; color: #4338ca; }
+  .training-meta { font-size: 12px; color: var(--text-secondary); }
+
+  /* Safety form */
+  .safety-form {
+    margin-top: 10px;
+  }
+  .form-field {
+    margin-bottom: 10px;
+  }
+  .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    display: block;
+  }
+  .form-value {
+    font-size: 13px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .form-value.prefilled {
+    border-style: dashed;
+    border-color: var(--wow-green);
+    background: var(--wow-green-pale);
+  }
+
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0;
+  }
+  .typing-indicator span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    animation: bounce 1.4s infinite;
+  }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+
+  .orchestration-note {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 6px;
+    padding-left: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Password Screen -->
+<div class="password-screen" id="passwordScreen">
+  <div class="password-box">
+    <div class="password-logo">🔒</div>
+    <h1>Woolworths Prototype</h1>
+    <p>Enter the password to continue</p>
+    <form onsubmit="checkPassword(event)">
+      <input type="password" class="password-input" id="passwordInput" placeholder="Password" autofocus>
+      <button type="submit" class="password-submit">Enter</button>
+    </form>
+    <div class="password-error" id="passwordError"></div>
+  </div>
+</div>
+
+<!-- Intro Screen -->
+<div class="intro-screen hidden" id="introScreen">
+  <div class="intro-box">
+    <h1>Agentic Team Experience</h1>
+    <div class="intro-subtitle">Woolworths — Concept Prototype</div>
+
+    <div class="intro-scenario">
+      <h3>☀️ Start of Shift</h3>
+      <p>The agent proactively briefs Sarah with her schedule, delivery info, training due, and team messages — pulled from UKG, SAP, SuccessFactors, and WorkJam automatically. She clocks in with a single tap.</p>
+    </div>
+    <div class="intro-scenario">
+      <h3>🏖️ Leave Request</h3>
+      <p>Sarah asks "Can I take next Friday off?" and the agent checks her leave balance (SuccessFactors), roster impact (UKG), and available cover — then submits the leave and messages a colleague to cover, all in one conversation.</p>
+    </div>
+    <div class="intro-scenario">
+      <h3>⚠️ Safety Incident</h3>
+      <p>Sarah reports a slip and the agent pre-fills the entire incident form from her profile, shift, and store location. No navigating to a separate SAP safety system.</p>
+    </div>
+    <div class="intro-scenario">
+      <h3>📚 Learning</h3>
+      <p>The agent knows Sarah has a training due and spots a quiet window in her roster to suggest doing it. Sets her WorkJam status to "In Training" automatically.</p>
+    </div>
+    <div class="intro-scenario">
+      <h3>🔄 Shift Swap</h3>
+      <p>Sarah says she can't work Wednesday. The agent finds 3 qualified, available colleagues who wouldn't hit overtime, sends the swap request, and handles the roster update.</p>
+    </div>
+
+    <div class="intro-key-point">
+      <p><strong>The key thing this demonstrates is the orchestration layer concept</strong> — Sarah never opens UKG, SuccessFactors, SAP, or WorkJam directly. She just talks to the assistant in natural language, and it handles the cross-system coordination behind the scenes. Each scenario shows the source system tags so you can see how many systems are being stitched together invisibly.</p>
+    </div>
+
+    <button class="intro-start-btn" onclick="startPrototype()">Start Prototype →</button>
+  </div>
+</div>
+
+<div class="phone-frame" id="prototypeFrame" style="display:none;">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>📶 🔋 82%</span>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="header-greeting">Good morning</div>
+        <div class="header-name">Sarah 👋</div>
+      </div>
+      <div class="header-avatar">SM</div>
+    </div>
+    <div class="header-context">
+      <div class="dot"></div>
+      <div class="store-info">Metro Martin Place · Fresh Produce</div>
+      <div class="shift-time">6:00–14:00</div>
+    </div>
+  </div>
+
+  <!-- Scenario Tabs -->
+  <div class="scenario-nav">
+    <button class="scenario-tab active" onclick="showScenario('start-shift')">Start of Shift</button>
+    <button class="scenario-tab" onclick="showScenario('leave')">Leave Request</button>
+    <button class="scenario-tab" onclick="showScenario('safety')">Safety Incident</button>
+    <button class="scenario-tab" onclick="showScenario('learning')">Learning</button>
+    <button class="scenario-tab" onclick="showScenario('shift-swap')">Shift Swap</button>
+  </div>
+
+  <!-- Scrollable content area -->
+  <div class="content">
+
+    <!-- ==================== SCENARIO 1: START OF SHIFT ==================== -->
+    <div class="scenario active" id="start-shift">
+      <div class="chat-flow">
+
+        <div class="msg system">Today · 5:52 AM</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Morning Sarah! Here's your shift briefing for today.
+
+          <div class="info-card">
+            <div class="info-card-title">Your Day at a Glance</div>
+            <div class="shift-timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot current"></div>
+                <span class="timeline-time">6:00</span>
+                <span class="timeline-label">Clock in & start <span class="source-tag">UKG</span></span>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot upcoming"></div>
+                <span class="timeline-time">6:30</span>
+                <span class="timeline-label">Fresh delivery — 3 pallets <span class="source-tag">SAP</span></span>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot upcoming"></div>
+                <span class="timeline-time">10:00</span>
+                <span class="timeline-label">Break (30 min)</span>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot upcoming"></div>
+                <span class="timeline-time">10:30</span>
+                <span class="timeline-label">Food Safety Check due <span class="source-tag">SAP</span></span>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot upcoming"></div>
+                <span class="timeline-time">14:00</span>
+                <span class="timeline-label">Clock out</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-card">
+            <div class="alert-card-header">⚡ 1 thing that needs your attention</div>
+            <div class="alert-card-body">Your <strong>Cold Chain Handling</strong> refresher is due by Friday. It takes about 12 minutes — want me to slot it into a quiet period today?</div>
+          </div>
+
+          <div class="source-tags">
+            <span class="source-tag ukg">UKG</span>
+            <span class="source-tag sap">SAP</span>
+            <span class="source-tag sf">SuccessFactors</span>
+            <span class="source-tag wj">WorkJam</span>
+          </div>
+          <div class="orchestration-note">Pulled from 4 systems automatically</div>
+        </div>
+
+        <div class="msg user">Yes, slot in the training when it's quiet</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Done! I've scheduled <strong>Cold Chain Handling</strong> for 11:15 AM — that's historically the quietest window on Tuesdays. I'll send you a nudge 5 minutes before.
+
+          <div class="action-buttons">
+            <button class="action-btn primary" onclick="clockIn()">Clock In Now</button>
+            <button class="action-btn">View Team Roster</button>
+          </div>
+        </div>
+
+        <div class="msg user">Clock me in</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          ✅ You're clocked in at <strong>5:58 AM</strong>.
+
+          <div class="info-card">
+            <div class="info-row">
+              <span class="label">Status</span>
+              <span class="value green">● On Shift</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Hours this week</span>
+              <span class="value">24.5 / 38 hrs</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Overtime alert</span>
+              <span class="value">None</span>
+            </div>
+          </div>
+          <div class="source-tags">
+            <span class="source-tag ukg">UKG</span>
+          </div>
+
+          <div style="margin-top:10px; font-size:13px;">One more thing — there's a message from your Team Lead in the group chat. Want me to read it out?</div>
+          <div class="source-tags">
+            <span class="source-tag wj">WorkJam</span>
+          </div>
+        </div>
+
+        <div class="msg user">Yeah go ahead</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          From <strong>James (Team Lead)</strong>, posted at 5:30 AM:
+
+          <div class="info-card" style="background: #f8f8fc;">
+            <div style="font-size:13px; font-style:italic;">"Morning team — heads up, we've got a promo reset in Aisle 4 today. Sarah & Priya, can you handle this after the delivery is sorted? Planogram is in the usual spot."</div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="action-btn">👍 React</button>
+            <button class="action-btn">Reply</button>
+            <button class="action-btn">Show Planogram</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== SCENARIO 2: LEAVE REQUEST ==================== -->
+    <div class="scenario" id="leave">
+      <div class="chat-flow">
+
+        <div class="msg system">Cross-system journey: UKG + SuccessFactors + WorkJam</div>
+
+        <div class="msg user">Can I take next Friday off?</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Let me check that for you across your leave balance and the roster...
+          <div class="typing-indicator"><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Here's what I found:
+
+          <div class="info-card">
+            <div class="info-card-title">Leave Balance</div>
+            <div class="info-row">
+              <span class="label">Annual Leave</span>
+              <span class="value green">12.5 days available</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Personal/Carer's</span>
+              <span class="value">6 days available</span>
+            </div>
+            <div class="source-tags" style="margin-top:4px">
+              <span class="source-tag sf">SuccessFactors</span>
+            </div>
+          </div>
+
+          <div class="info-card" style="margin-top: 8px;">
+            <div class="info-card-title">Roster Impact — Friday 11 April</div>
+            <div class="info-row">
+              <span class="label">Your shift</span>
+              <span class="value">6:00–14:00</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Team coverage</span>
+              <span class="value" style="color: #d97706;">⚠ 1 short in Fresh</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Available to cover</span>
+              <span class="value">Priya, Daniel</span>
+            </div>
+            <div class="source-tags" style="margin-top:4px">
+              <span class="source-tag ukg">UKG</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 10px; font-size: 13px;">You've got plenty of leave. The team would be 1 short in Fresh, but <strong>Priya</strong> or <strong>Daniel</strong> could cover. Want me to:</div>
+
+          <div class="action-buttons">
+            <button class="action-btn primary" onclick="submitLeave()">Submit leave request</button>
+            <button class="action-btn">Ask Priya to cover</button>
+            <button class="action-btn">Check another date</button>
+          </div>
+        </div>
+
+        <div class="msg user">Submit it and ask Priya if she can cover</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Done! Two things actioned:
+
+          <div class="checklist">
+            <div class="checklist-item">
+              <div class="check-icon done">✓</div>
+              <div>
+                <strong>Annual leave submitted</strong> for Fri 11 April
+                <div style="font-size:12px; color: var(--text-secondary);">Pending approval from James (Team Lead)</div>
+                <div class="source-tags"><span class="source-tag sf">SuccessFactors</span></div>
+              </div>
+            </div>
+            <div class="checklist-item">
+              <div class="check-icon done">✓</div>
+              <div>
+                <strong>Message sent to Priya</strong>
+                <div style="font-size:12px; color: var(--text-secondary);">"Hi Priya, Sarah is requesting Fri 11 April off — would you be able to cover 6:00–14:00 in Fresh Produce?"</div>
+                <div class="source-tags"><span class="source-tag wj">WorkJam</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; font-size:13px;">I'll let you know when James approves and when Priya responds. Anything else?</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== SCENARIO 3: SAFETY INCIDENT ==================== -->
+    <div class="scenario" id="safety">
+      <div class="chat-flow">
+
+        <div class="msg system">Cross-system journey: SAP + UKG + SuccessFactors</div>
+
+        <div class="msg user">I just slipped on a wet floor near the cool room</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+
+          <div class="alert-card urgent">
+            <div class="alert-card-header">🚨 Are you okay, Sarah?</div>
+            <div class="alert-card-body">Your safety is the priority. Do you need first aid or medical attention right now?</div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="action-btn primary" style="border-color:#dc2626; background:#dc2626;">I need first aid</button>
+            <button class="action-btn" onclick="noFirstAid()">I'm okay, just report it</button>
+          </div>
+        </div>
+
+        <div class="msg user">I'm okay, just a minor slip. Want to report it</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Glad you're alright. I've started the incident report and pre-filled what I can from your current context:
+
+          <div class="safety-form">
+            <div class="form-field">
+              <span class="form-label">WHO</span>
+              <div class="form-value prefilled">Sarah Mitchell — Team Member, Fresh Produce</div>
+            </div>
+            <div class="form-field">
+              <span class="form-label">WHEN</span>
+              <div class="form-value prefilled">Tue 8 April 2026, 7:23 AM (during shift 6:00–14:00)</div>
+            </div>
+            <div class="form-field">
+              <span class="form-label">WHERE</span>
+              <div class="form-value prefilled">Metro Martin Place — Near cool room (Fresh section)</div>
+            </div>
+            <div class="form-field">
+              <span class="form-label">WHAT HAPPENED</span>
+              <div class="form-value prefilled">Slip on wet floor near cool room. No injury reported. Team member self-assessed as okay.</div>
+            </div>
+            <div class="form-field">
+              <span class="form-label">HAZARD TYPE</span>
+              <div class="form-value prefilled">Wet/slippery floor</div>
+            </div>
+          </div>
+
+          <div class="orchestration-note">Pre-filled from your profile, roster, and store location</div>
+          <div class="source-tags">
+            <span class="source-tag sap">SAP EHS</span>
+            <span class="source-tag ukg">UKG</span>
+            <span class="source-tag sf">SuccessFactors</span>
+          </div>
+
+          <div style="margin-top:10px; font-size:13px;">Does this look right? I can also add a photo if you take one of the area.</div>
+
+          <div class="action-buttons">
+            <button class="action-btn primary">Looks correct, submit</button>
+            <button class="action-btn">📷 Add photo</button>
+            <button class="action-btn">Edit details</button>
+          </div>
+        </div>
+
+        <div class="msg user">Submit it</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          ✅ Incident report <strong>#INC-2026-04182</strong> submitted.
+
+          <div class="checklist">
+            <div class="checklist-item">
+              <div class="check-icon done">✓</div>
+              <div><strong>Report filed</strong> in SAP EHS</div>
+            </div>
+            <div class="checklist-item">
+              <div class="check-icon done">✓</div>
+              <div><strong>James (Team Lead)</strong> notified via WorkJam</div>
+            </div>
+            <div class="checklist-item">
+              <div class="check-icon done">✓</div>
+              <div><strong>Store Safety Officer</strong> alerted for follow-up</div>
+            </div>
+            <div class="checklist-item">
+              <div class="check-icon pending">!</div>
+              <div><strong>Wet floor sign check</strong> — has a sign been placed?
+                <div class="action-buttons" style="margin-top:6px;">
+                  <button class="action-btn" style="padding: 5px 12px; font-size:12px;">Yes, sign placed</button>
+                  <button class="action-btn" style="padding: 5px 12px; font-size:12px;">No, need one</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; font-size:13px; color: var(--text-secondary);">A safety follow-up will be sent to you in 24 hours to check you're still feeling okay.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== SCENARIO 4: LEARNING ==================== -->
+    <div class="scenario" id="learning">
+      <div class="chat-flow">
+
+        <div class="msg system">Cross-system journey: SuccessFactors Learning + UKG + WorkJam</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Hey Sarah, you've got a quiet window coming up at 11:15. Ready for your <strong>Cold Chain Handling</strong> refresher? It's due by Friday.
+
+          <div class="training-card">
+            <div class="training-card-header">
+              <span class="training-title">❄️ Cold Chain Handling</span>
+              <span class="training-badge required">Required</span>
+            </div>
+            <div class="training-meta">12 min · Video + Quiz · Due: Fri 11 April</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
+            <div style="font-size:11px; color: var(--text-secondary); margin-top:4px;">Not started</div>
+          </div>
+
+          <div style="margin-top:8px; font-size:13px;">You also have 2 other modules on your learning plan:</div>
+
+          <div class="training-card">
+            <div class="training-card-header">
+              <span class="training-title">🧹 Allergen Awareness 2026</span>
+              <span class="training-badge required">Required</span>
+            </div>
+            <div class="training-meta">8 min · Interactive · Due: 30 April</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+            <div style="font-size:11px; color: var(--text-secondary); margin-top:4px;">60% complete</div>
+          </div>
+
+          <div class="training-card">
+            <div class="training-card-header">
+              <span class="training-title">📦 Produce Quality Masterclass</span>
+              <span class="training-badge optional">Optional</span>
+            </div>
+            <div class="training-meta">25 min · Video series · Team Lead recommended</div>
+          </div>
+
+          <div class="source-tags" style="margin-top:8px;">
+            <span class="source-tag sf">SuccessFactors Learning</span>
+            <span class="source-tag ukg">UKG Schedule</span>
+          </div>
+
+          <div class="action-buttons">
+            <button class="action-btn primary">▶ Start Cold Chain Handling</button>
+            <button class="action-btn">Continue Allergen module</button>
+            <button class="action-btn">Remind me later</button>
+          </div>
+        </div>
+
+        <div class="msg user">Start the cold chain one</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Loading <strong>Cold Chain Handling</strong> refresher now...
+
+          <div class="info-card" style="text-align: center; padding: 30px;">
+            <div style="font-size: 40px; margin-bottom: 10px;">❄️</div>
+            <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Cold Chain Handling</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">Module 1 of 3 · ~12 minutes</div>
+            <div class="progress-bar" style="max-width: 200px; margin: 0 auto;"><div class="progress-fill" style="width: 33%"></div></div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">Video playing inline — no app switch needed</div>
+          </div>
+
+          <div style="margin-top:10px; font-size:13px; color: var(--text-secondary);">
+            I've set your status to "In Training" on WorkJam so your team knows you're unavailable for the next 12 minutes.
+          </div>
+          <div class="source-tags">
+            <span class="source-tag sf">SuccessFactors</span>
+            <span class="source-tag wj">WorkJam</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== SCENARIO 5: SHIFT SWAP ==================== -->
+    <div class="scenario" id="shift-swap">
+      <div class="chat-flow">
+
+        <div class="msg system">Cross-system journey: UKG + WorkJam + SuccessFactors</div>
+
+        <div class="msg user">I can't work next Wednesday, can someone swap with me?</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          Let me check who's available and eligible to swap...
+
+          <div class="info-card">
+            <div class="info-card-title">Your Shift — Wed 9 April</div>
+            <div class="info-row">
+              <span class="label">Time</span>
+              <span class="value">6:00 – 14:00</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Department</span>
+              <span class="value">Fresh Produce</span>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; font-size:13px;">I found <strong>3 team members</strong> who are off on Wednesday, have the right qualifications, and wouldn't hit overtime:</div>
+
+          <div class="info-card" style="margin-top:6px;">
+            <div class="info-row">
+              <span class="label">
+                <strong>Daniel R.</strong>
+                <div style="font-size:11px; color: var(--text-secondary);">Fresh qualified · 28/38 hrs</div>
+              </span>
+              <button class="action-btn" style="padding: 5px 12px; font-size:12px;">Ask Daniel</button>
+            </div>
+            <div class="info-row">
+              <span class="label">
+                <strong>Priya K.</strong>
+                <div style="font-size:11px; color: var(--text-secondary);">Fresh qualified · 30/38 hrs</div>
+              </span>
+              <button class="action-btn" style="padding: 5px 12px; font-size:12px;">Ask Priya</button>
+            </div>
+            <div class="info-row">
+              <span class="label">
+                <strong>Mei L.</strong>
+                <div style="font-size:11px; color: var(--text-secondary);">Fresh qualified · 24/38 hrs</div>
+              </span>
+              <button class="action-btn" style="padding: 5px 12px; font-size:12px;">Ask Mei</button>
+            </div>
+          </div>
+
+          <div class="source-tags" style="margin-top:8px;">
+            <span class="source-tag ukg">UKG Roster</span>
+            <span class="source-tag sf">SuccessFactors Skills</span>
+          </div>
+          <div class="orchestration-note">Checked roster, qualifications, and overtime limits automatically</div>
+
+          <div class="action-buttons">
+            <button class="action-btn primary">Ask all 3</button>
+            <button class="action-btn">Post to team board</button>
+          </div>
+        </div>
+
+        <div class="msg user">Ask all 3</div>
+
+        <div class="msg agent">
+          <div class="agent-label"><span class="sparkle">✦</span> Woolworths Assistant</div>
+          ✅ Swap request sent to <strong>Daniel, Priya, and Mei</strong> via WorkJam.
+
+          <div class="info-card">
+            <div style="font-size:13px; font-style:italic; color: var(--text-secondary); padding:4px 0;">
+              "Hi! Sarah is looking to swap her Wed 9 April shift (6:00–14:00, Fresh Produce). Interested? Tap below to accept."
+            </div>
+          </div>
+
+          <div style="margin-top:10px; font-size:13px;">First to accept gets it — I'll handle the roster update and Team Lead notification automatically. I'll let you know as soon as someone responds.</div>
+
+          <div class="source-tags">
+            <span class="source-tag wj">WorkJam</span>
+            <span class="source-tag ukg">UKG</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- Input Bar -->
+  <div class="input-bar">
+    <button class="voice-btn">🎤</button>
+    <input type="text" class="input-field" placeholder="Ask me anything...">
+    <button class="send-btn">↑</button>
+  </div>
+</div>
+
+<script>
+  function showScenario(id) {
+    document.querySelectorAll('.scenario').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    document.querySelector('.content').scrollTop = 0;
+  }
+
+  // Password: simple hash check (not military-grade, but gates casual access)
+  const PASS_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // "password" - we'll set it below
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Set your password here — hashed on first load
+  const EXPECTED_HASH = 'a0f3285b07c26c0dcd2191447f391170d06035e8d57e31a048ba87074f3a9a15'; // "woolworths2026"
+
+  async function checkPassword(e) {
+    e.preventDefault();
+    const input = document.getElementById('passwordInput').value;
+    const hash = await sha256(input);
+    if (hash === EXPECTED_HASH) {
+      document.getElementById('passwordScreen').classList.add('hidden');
+      document.getElementById('introScreen').classList.remove('hidden');
+    } else {
+      document.getElementById('passwordError').textContent = 'Incorrect password. Please try again.';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+    }
+  }
+
+  function startPrototype() {
+    document.getElementById('introScreen').classList.add('hidden');
+    document.getElementById('prototypeFrame').style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>
